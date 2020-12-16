@@ -1,20 +1,20 @@
-import Vue from 'vue'
+import Vue from "vue";
 
-import DarkMixin from '../../mixins/dark.js'
-import { getSizeMixin } from '../../mixins/size.js'
-import ListenersMixin from '../../mixins/listeners.js'
+import DarkMixin from "../../mixins/dark.js";
+import { getSizeMixin } from "../../mixins/size.js";
+import ListenersMixin from "../../mixins/listeners.js";
 
-import { mergeSlot } from '../../utils/slot.js'
+import { mergeSlot } from "../../utils/slot.js";
 
-function width (val, reverse) {
+function width(val, reverse) {
   if (reverse === true) {
-    return { transform: `translateX(100%) scale3d(${-val},1,1)` }
+    return { transform: `translateX(100%) scale3d(${-val},1,1)` };
   }
-  return { transform: `scale3d(${val},1,1)` }
+  return { width: `${val}%` };
 }
 
 export default Vue.extend({
-  name: 'QLinearProgress',
+  name: "QLinearProgress",
 
   mixins: [
     ListenersMixin,
@@ -24,14 +24,14 @@ export default Vue.extend({
       sm: 4,
       md: 6,
       lg: 10,
-      xl: 14
-    })
+      xl: 14,
+    }),
   ],
 
   props: {
     value: {
       type: Number,
-      default: 0
+      default: 0,
     },
     buffer: Number,
 
@@ -44,81 +44,103 @@ export default Vue.extend({
     query: Boolean,
     rounded: Boolean,
 
-    instantFeedback: Boolean
+    instantFeedback: Boolean,
   },
 
   computed: {
-    motion () {
-      return this.indeterminate === true || this.query === true
+    motion() {
+      return this.indeterminate === true || this.query === true;
     },
 
-    classes () {
-      return 'q-linear-progress' +
-        (this.color !== void 0 ? ` text-${this.color}` : '') +
-        (this.reverse === true || this.query === true ? ' q-linear-progress--reverse' : '') +
-        (this.rounded === true ? ' rounded-borders' : '')
+    classes() {
+      return (
+        "q-linear-progress" +
+        (this.color !== void 0 ? ` text-${this.color}` : "") +
+        (this.reverse === true || this.query === true
+          ? " q-linear-progress--reverse"
+          : "") +
+        (this.rounded === true ? " rounded-borders" : "")
+      );
     },
 
-    trackStyle () {
-      return width(this.buffer !== void 0 ? this.buffer : 1, this.reverse)
+    trackStyle() {
+      return width(this.buffer !== void 0 ? this.buffer : 1, this.reverse);
     },
 
-    trackClass () {
-      return `q-linear-progress__track--with${this.instantFeedback === true ? 'out' : ''}-transition` +
-        ` q-linear-progress__track--${this.isDark === true ? 'dark' : 'light'}` +
-        (this.trackColor !== void 0 ? ` bg-${this.trackColor}` : '')
+    trackClass() {
+      return (
+        `q-linear-progress__track--with${
+          this.instantFeedback === true ? "out" : ""
+        }-transition` +
+        ` q-linear-progress__track--${
+          this.isDark === true ? "dark" : "light"
+        }` +
+        (this.trackColor !== void 0 ? ` bg-${this.trackColor}` : "")
+      );
     },
 
-    modelStyle () {
-      return width(this.motion === true ? 1 : this.value, this.reverse)
+    modelStyle() {
+      return width(this.motion === true ? 1 : this.value, this.reverse);
     },
 
-    modelClasses () {
-      return `q-linear-progress__model--with${this.instantFeedback === true ? 'out' : ''}-transition` +
-        ` q-linear-progress__model--${this.motion === true ? 'in' : ''}determinate`
+    modelClasses() {
+      return (
+        `q-linear-progress__model--with${
+          this.instantFeedback === true ? "out" : ""
+        }-transition` +
+        ` q-linear-progress__model--${
+          this.motion === true ? "in" : ""
+        }determinate`
+      );
     },
 
-    stripeStyle () {
-      return { width: (this.value * 100) + '%' }
+    stripeStyle() {
+      return { width: this.value * 100 + "%" };
     },
 
-    attrs () {
+    attrs() {
       return {
-        role: 'progressbar',
-        'aria-valuemin': 0,
-        'aria-valuemax': 1,
-        'aria-valuenow': this.indeterminate === true ? void 0 : this.value
-      }
-    }
+        role: "progressbar",
+        "aria-valuemin": 0,
+        "aria-valuemax": 1,
+        "aria-valuenow": this.indeterminate === true ? void 0 : this.value,
+      };
+    },
   },
 
-  render (h) {
+  render(h) {
     const child = [
-      h('div', {
-        staticClass: 'q-linear-progress__track absolute-full',
+      h("div", {
+        staticClass: "q-linear-progress__track absolute-full",
         style: this.trackStyle,
-        class: this.trackClass
+        class: this.trackClass,
       }),
 
-      h('div', {
-        staticClass: 'q-linear-progress__model absolute-full',
+      h("div", {
+        staticClass: "q-linear-progress__model absolute-full",
         style: this.modelStyle,
-        class: this.modelClasses
-      })
-    ]
+        class: this.modelClasses,
+      }),
+    ];
 
-    this.stripe === true && this.motion === false && child.push(
-      h('div', {
-        staticClass: 'q-linear-progress__stripe absolute-full',
-        style: this.stripeStyle
-      })
-    )
+    this.stripe === true &&
+      this.motion === false &&
+      child.push(
+        h("div", {
+          staticClass: "q-linear-progress__stripe absolute-full",
+          style: this.stripeStyle,
+        })
+      );
 
-    return h('div', {
-      style: this.sizeStyle,
-      class: this.classes,
-      attrs: this.attrs,
-      on: { ...this.qListeners }
-    }, mergeSlot(child, this, 'default'))
-  }
-})
+    return h(
+      "div",
+      {
+        style: this.sizeStyle,
+        class: this.classes,
+        attrs: this.attrs,
+        on: { ...this.qListeners },
+      },
+      mergeSlot(child, this, "default")
+    );
+  },
+});
